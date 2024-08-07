@@ -1,0 +1,19 @@
+<button onclick="getConnector()">Get connector</button>
+
+<script>
+  function getConnector() {
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: "GET_CONNECTOR",
+        },
+      },
+      "*"
+    );
+  }
+
+  onmessage = (event) => {
+    const { type, data } = event.data.pluginMessage;
+    console.log(type);
+  };
+</script>
