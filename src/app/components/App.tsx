@@ -37,8 +37,7 @@ function App() {
 
   return (
     <>
-      <textarea name="" id="inputArea" cols={30} rows={10}></textarea>
-      <h1>Hello</h1>
+      <textarea name="" id="inputArea"></textarea>
     </>
   );
 }
