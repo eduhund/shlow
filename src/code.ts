@@ -15,11 +15,14 @@ const {
 
     initConnector =
       allConnectors.find(
-        (connector) => connector.name === "_flow-init-arrow"
+        (connector) => connector.name === "_flow-init-connector"
       ) || null;
 
     if (!initConnector) {
-      figma.ui.postMessage({ type: "GET_INIT_ARROW", data: { initArrow } });
+      figma.ui.postMessage({
+        type: "GET_INIT_CONNECTOR",
+        data: { initConnector },
+      });
     }
   }
 

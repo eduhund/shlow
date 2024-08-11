@@ -14,11 +14,11 @@
   onmessage = (event) => {
     const { type, data } = event.data.pluginMessage;
     switch (type) {
-      case "GET_INIT_ARROW":
-        if (data.initArrow) {
+      case "GET_INIT_CONNECTOR":
+        if (data.initConnector) {
           const input = document.getElementById("inputArea");
           input.focus();
-          input.value = data.initArrow;
+          input.value = data.initConnector;
           document.execCommand("copy");
           input.blur();
           parent.postMessage(
