@@ -27,7 +27,13 @@ const {
   }
 
   function getInitConnector() {
-    return initConnector;
+    return (
+      initConnector ||
+      figma.ui.postMessage({
+        type: "GET_INIT_CONNECTOR",
+        data: { connectorTemplate },
+      })
+    );
   }
 
   function setInitConnector(node: ConnectorNode) {
