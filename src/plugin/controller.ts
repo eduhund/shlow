@@ -15,7 +15,10 @@ const { checkInitConnector, setInitConnector, createConnector } = (() => {
         type: 'GET_INIT_CONNECTOR',
         data: { connectorTemplate },
       });
+      return false;
     }
+
+    return true;
   }
 
   //function getInitConnector() {
@@ -55,7 +58,22 @@ const { checkInitConnector, setInitConnector, createConnector } = (() => {
 })();
 
 figma.showUI(__html__);
-checkInitConnector();
+!checkInitConnector() &&
+  figma.once('selectionchange', () => {
+    const nodes = figma.currentPage.selection;
+
+    if (nodes.length === 1 && nodes[0].type === 'CONNECTOR') {
+      const arrow = nodes[0];
+      figma.currentPage.selection = [];
+      figma.currentPage.insertChild(0, arrow);
+      arrow.x = -131100;
+      arrow.y = -131100;
+      arrow.visible = false;
+      arrow.locked = true;
+      arrow.name = '_flow-init-connector';
+      setInitConnector(arrow);
+    }
+  });
 
 figma.ui.onmessage = ({ type, data }) => {
   data;
@@ -65,22 +83,6 @@ figma.ui.onmessage = ({ type, data }) => {
       figma.viewport.zoom = figma.viewport.zoom;
   }
 };
-
-figma.once('selectionchange', () => {
-  const nodes = figma.currentPage.selection;
-
-  if (nodes.length === 1 && nodes[0].type === 'CONNECTOR') {
-    const arrow = nodes[0];
-    figma.currentPage.selection = [];
-    figma.currentPage.insertChild(0, arrow);
-    arrow.x = -131100;
-    arrow.y = -131100;
-    arrow.visible = false;
-    arrow.locked = true;
-    arrow.name = '_flow-init-connector';
-    setInitConnector(arrow);
-  }
-});
 
 figma.on('selectionchange', () => {
   const nodes = figma.currentPage.selection;
