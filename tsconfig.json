@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": ["es6"],
-    "strict": true,
-    "typeRoots": ["./node_modules/@types", "./node_modules/@figma"],
-    "outDir": "./dist",
+    "outDir": "dist",
     "jsx": "react",
-    "allowJs": true,
-    "moduleResolution": "node"
-  },
-  "include": ["src/**/*.ts", "webpack.config.js"],
-  "ignorePatterns": ["node_modules", "webpack.config.js"]
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "removeComments": true,
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "typeRoots": ["./node_modules/@types", "./node_modules/@figma"]
+  }
 }

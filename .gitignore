@@ -1,8 +1,10 @@
-# Node
+node_modules
+dist
+settings.json
+yarn-error.log
+.vscode
+
 *.log
 *.log.*
-node_modules
 
-out/
 dist/
-code.js

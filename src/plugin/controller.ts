@@ -1,40 +1,32 @@
-import connectorTemplate from "./arrowString";
+import connectorTemplate from './arrowString';
 
-const {
-  checkInitConnector,
-  getInitConnector,
-  setInitConnector,
-  createConnector,
-} = (() => {
+const { checkInitConnector, setInitConnector, createConnector } = (() => {
   let initConnector: ConnectorNode | null = null;
 
   function checkInitConnector() {
     const allConnectors = figma.currentPage.findAllWithCriteria({
-      types: ["CONNECTOR"],
+      types: ['CONNECTOR'],
     });
 
-    initConnector =
-      allConnectors.find(
-        (connector) => connector.name === "_flow-init-connector"
-      ) || null;
+    initConnector = allConnectors.find((connector) => connector.name === '_flow-init-connector') || null;
 
     if (!initConnector) {
       figma.ui.postMessage({
-        type: "GET_INIT_CONNECTOR",
+        type: 'GET_INIT_CONNECTOR',
         data: { connectorTemplate },
       });
     }
   }
 
-  function getInitConnector() {
-    return (
-      initConnector ||
-      figma.ui.postMessage({
-        type: "GET_INIT_CONNECTOR",
-        data: { connectorTemplate },
-      })
-    );
-  }
+  //function getInitConnector() {
+  //  return (
+  //    initConnector ||
+  //    figma.ui.postMessage({
+  //      type: 'GET_INIT_CONNECTOR',
+  //      data: { connectorTemplate },
+  //    })
+  //  );
+  //}
 
   function setInitConnector(node: ConnectorNode) {
     initConnector = node;
@@ -45,19 +37,18 @@ const {
       const newConnector = initConnector.clone();
       newConnector.connectorStart = {
         endpointNodeId: nodes[0].id,
-        magnet: "AUTO",
+        magnet: 'AUTO',
       };
       newConnector.connectorEnd = {
         endpointNodeId: nodes[1].id,
-        magnet: "AUTO",
+        magnet: 'AUTO',
       };
-      newConnector.connectorLineType = "ELBOWED";
+      newConnector.connectorLineType = 'ELBOWED';
     }
   }
 
   return {
     checkInitConnector,
-    getInitConnector,
     setInitConnector,
     createConnector,
   };
@@ -69,16 +60,16 @@ checkInitConnector();
 figma.ui.onmessage = ({ type, data }) => {
   data;
   switch (type) {
-    case "FOCUS_ON_CANVAS":
+    case 'FOCUS_ON_CANVAS':
       figma.currentPage.selection = [];
       figma.viewport.zoom = figma.viewport.zoom;
   }
 };
 
-figma.once("selectionchange", () => {
+figma.once('selectionchange', () => {
   const nodes = figma.currentPage.selection;
 
-  if (nodes.length === 1 && nodes[0].type === "CONNECTOR") {
+  if (nodes.length === 1 && nodes[0].type === 'CONNECTOR') {
     const arrow = nodes[0];
     figma.currentPage.selection = [];
     figma.currentPage.insertChild(0, arrow);
@@ -86,12 +77,12 @@ figma.once("selectionchange", () => {
     arrow.y = -131100;
     arrow.visible = false;
     arrow.locked = true;
-    arrow.name = "_flow-init-connector";
+    arrow.name = '_flow-init-connector';
     setInitConnector(arrow);
   }
 });
 
-figma.on("selectionchange", () => {
+figma.on('selectionchange', () => {
   const nodes = figma.currentPage.selection;
   if (nodes.length === 2) {
     createConnector(nodes);
