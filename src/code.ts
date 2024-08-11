@@ -1,35 +1,34 @@
 import initArrow from "./arrowString";
 
-let arrowNode = null;
-
-const { setupConnector, createConnector } = (() => {
+const {
+  checkInitConnector,
+  getInitConnector,
+  setInitConnector,
+  createConnector,
+} = (() => {
   let initConnector: ConnectorNode | null = null;
 
-  function setupConnector() {
-    const selectedNode = figma.currentPage.selection[0];
-
-    if (selectedNode?.type === "CONNECTOR") {
-      initConnector = selectedNode;
-      return true;
-    }
-
-    const currentConnector = figma.currentPage.findAllWithCriteria({
+  function checkInitConnector() {
+    const allConnectors = figma.currentPage.findAllWithCriteria({
       types: ["CONNECTOR"],
-    })[0];
-
-    if (currentConnector) {
-      initConnector = currentConnector;
-      return true;
-    }
-
-    figma.notify("Plugin started, but we can't find the Connector Node", {
-      button: {
-        text: "More info",
-        action: () => {},
-      },
     });
 
-    return false;
+    initConnector =
+      allConnectors.find(
+        (connector) => connector.name === "_flow-init-arrow"
+      ) || null;
+
+    if (!initConnector) {
+      figma.ui.postMessage({ type: "GET_INIT_ARROW", data: { initArrow } });
+    }
+  }
+
+  function getInitConnector() {
+    return initConnector;
+  }
+
+  function setInitConnector(node: ConnectorNode) {
+    initConnector = node;
   }
 
   function createConnector(nodes: readonly SceneNode[]) {
@@ -47,34 +46,20 @@ const { setupConnector, createConnector } = (() => {
     }
   }
 
-  return { setupConnector, createConnector };
+  return {
+    checkInitConnector,
+    getInitConnector,
+    setInitConnector,
+    createConnector,
+  };
 })();
 
-function checkInitArrow() {
-  const allConnectors = figma.currentPage.findAllWithCriteria({
-    types: ["CONNECTOR"],
-  });
-
-  const initConnector = allConnectors.find(
-    (connector) => connector.name === "_flow-init-arrow"
-  );
-
-  if (!initConnector) {
-    figma.ui.postMessage({ type: "GET_INIT_ARROW", data: { initArrow } });
-  } else {
-    arrowNode = initConnector;
-    console.log(arrowNode);
-  }
-}
-
 figma.showUI(__html__);
-checkInitArrow();
+checkInitConnector();
 
 figma.ui.onmessage = ({ type, data }) => {
   data;
   switch (type) {
-    case "GET_CONNECTOR":
-      setupConnector() && figma.ui.postMessage({ type: "CONNECTOR_FOUND" });
     case "FOCUS_ON_CANVAS":
       figma.currentPage.selection = [];
       figma.viewport.zoom = figma.viewport.zoom;
@@ -93,8 +78,7 @@ figma.once("selectionchange", () => {
     arrow.visible = false;
     arrow.locked = true;
     arrow.name = "_flow-init-arrow";
-    arrowNode = arrow;
-    console.log(arrowNode);
+    setInitConnector(arrow);
   }
 });
 
