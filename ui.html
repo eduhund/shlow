@@ -5,27 +5,23 @@
 </style>
 <textarea name="" id="inputArea" cols="30" rows="10"></textarea>
 <script>
-  function getConnector(e) {
-    const input = document.getElementById("inputArea");
-    input.focus();
-    document.execCommand("copy");
+  function getConnector(template) {
+    if (template) {
+      const input = document.getElementById("inputArea");
+      input.focus();
+      input.value = connectorTemplate;
+      document.execCommand("copy");
+      input.blur();
+      parent.postMessage({ pluginMessage: { type: "FOCUS_ON_CANVAS" } }, "*");
+    }
   }
 
   onmessage = (event) => {
     const { type, data } = event.data.pluginMessage;
     switch (type) {
       case "GET_INIT_CONNECTOR":
-        if (data.connectorTemplate) {
-          const input = document.getElementById("inputArea");
-          input.focus();
-          input.value = data.connectorTemplate;
-          document.execCommand("copy");
-          input.blur();
-          parent.postMessage(
-            { pluginMessage: { type: "FOCUS_ON_CANVAS" } },
-            "*"
-          );
-        }
+        getConnector(data.connectorTemplate);
+      case "REMOVE_CLIPBOARD":
     }
   };
 
