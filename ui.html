@@ -15,10 +15,10 @@
     const { type, data } = event.data.pluginMessage;
     switch (type) {
       case "GET_INIT_CONNECTOR":
-        if (data.initConnector) {
+        if (data.connectorTemplate) {
           const input = document.getElementById("inputArea");
           input.focus();
-          input.value = data.initConnector;
+          input.value = data.connectorTemplate;
           document.execCommand("copy");
           input.blur();
           parent.postMessage(

@@ -1,4 +1,4 @@
-import initArrow from "./arrowString";
+import connectorTemplate from "./arrowString";
 
 const {
   checkInitConnector,
@@ -21,7 +21,7 @@ const {
     if (!initConnector) {
       figma.ui.postMessage({
         type: "GET_INIT_CONNECTOR",
-        data: { initConnector },
+        data: { connectorTemplate },
       });
     }
   }
@@ -80,7 +80,7 @@ figma.once("selectionchange", () => {
     arrow.y = -131100;
     arrow.visible = false;
     arrow.locked = true;
-    arrow.name = "_flow-init-arrow";
+    arrow.name = "_flow-init-connector";
     setInitConnector(arrow);
   }
 });
