@@ -2,9 +2,13 @@ import React from 'react';
 import '../styles/ui.css';
 
 function App() {
+  function getInput() {
+    return document.getElementById('inputArea') as HTMLInputElement;
+  }
+
   function getConnector(template) {
     if (template) {
-      const input = document.getElementById('inputArea') as HTMLInputElement;
+      const input = getInput();
       input.focus();
       input.value = template;
       document.execCommand('copy');
@@ -14,7 +18,6 @@ function App() {
   }
 
   React.useEffect(() => {
-    // This is how we read messages sent from the plugin controller
     window.onmessage = (event) => {
       const { type, data } = event.data.pluginMessage;
       switch (type) {
@@ -28,7 +31,7 @@ function App() {
   document.addEventListener('copy', function (event) {
     event.preventDefault();
     const clipboard = event.clipboardData;
-    const input = document.getElementById('inputArea') as HTMLInputElement;
+    const input = getInput();
     clipboard.setData('text/html', input.value);
   });
 
