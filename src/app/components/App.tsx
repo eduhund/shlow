@@ -29,8 +29,12 @@ function App() {
           return;
         case 'CONFIG_NODES':
           setStatus('nodesSettings');
+          return;
         case 'CONFIG_CONNECTOR':
           setStatus('connectorSettings');
+          return;
+        default:
+          setStatus('ready');
       }
     };
   }, []);

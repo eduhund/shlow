@@ -47,6 +47,7 @@ const { checkInitConnector, setInitConnector, createConnector } = (() => {
         magnet: 'AUTO',
       };
       newConnector.connectorLineType = 'ELBOWED';
+      figma.currentPage.selection = [newConnector];
     }
   }
 
@@ -81,12 +82,28 @@ figma.ui.onmessage = ({ type, data }) => {
     case 'FOCUS_ON_CANVAS':
       figma.currentPage.selection = [];
       figma.viewport.zoom = figma.viewport.zoom;
+    case 'CREATE_CONNECTOR':
+      createConnector(figma.currentPage.selection);
   }
 };
 
 figma.on('selectionchange', () => {
+  console.log('change');
   const nodes = figma.currentPage.selection;
-  if (nodes.length === 2) {
-    createConnector(nodes);
+  if (nodes.length === 2 && nodes[0].type !== 'CONNECTOR' && nodes[1].type !== 'CONNECTOR') {
+    figma.ui.postMessage({
+      type: 'CONFIG_NODES',
+    });
+    return;
   }
+  if (nodes.length === 1 && nodes[0].type === 'CONNECTOR') {
+    figma.ui.postMessage({
+      type: 'CONFIG_CONNECTOR',
+    });
+    return;
+  }
+
+  figma.ui.postMessage({
+    type: 'SET_READY',
+  });
 });
