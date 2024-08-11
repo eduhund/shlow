@@ -1,5 +1,6 @@
-import { node } from "webpack";
 import initArrow from "./arrowString";
+
+let arrowNode = null;
 
 const { setupConnector, createConnector } = (() => {
   let initConnector: ConnectorNode | null = null;
@@ -49,9 +50,25 @@ const { setupConnector, createConnector } = (() => {
   return { setupConnector, createConnector };
 })();
 
-figma.showUI(__html__);
+function checkInitArrow() {
+  const allConnectors = figma.currentPage.findAllWithCriteria({
+    types: ["CONNECTOR"],
+  });
 
-figma.ui.postMessage({ type: "GET_INIT_ARROW", data: { initArrow } });
+  const initConnector = allConnectors.find(
+    (connector) => connector.name === "_flow-init-arrow"
+  );
+
+  if (!initConnector) {
+    figma.ui.postMessage({ type: "GET_INIT_ARROW", data: { initArrow } });
+  } else {
+    arrowNode = initConnector;
+    console.log(arrowNode);
+  }
+}
+
+figma.showUI(__html__);
+checkInitArrow();
 
 figma.ui.onmessage = ({ type, data }) => {
   data;
@@ -76,8 +93,13 @@ figma.once("selectionchange", () => {
     arrow.visible = false;
     arrow.locked = true;
     arrow.name = "_flow-init-arrow";
+    arrowNode = arrow;
+    console.log(arrowNode);
   }
+});
 
+figma.on("selectionchange", () => {
+  const nodes = figma.currentPage.selection;
   if (nodes.length === 2) {
     createConnector(nodes);
   }
