@@ -9,7 +9,7 @@
     if (template) {
       const input = document.getElementById("inputArea");
       input.focus();
-      input.value = connectorTemplate;
+      input.value = template;
       document.execCommand("copy");
       input.blur();
       parent.postMessage({ pluginMessage: { type: "FOCUS_ON_CANVAS" } }, "*");
@@ -21,16 +21,13 @@
     switch (type) {
       case "GET_INIT_CONNECTOR":
         getConnector(data.connectorTemplate);
-      case "REMOVE_CLIPBOARD":
+        return;
     }
   };
 
   document.addEventListener("copy", function (event) {
     event.preventDefault();
-    let clipboardData = event.clipboardData || window.clipboardData;
-    clipboardData.setData(
-      "text/html",
-      document.getElementById("inputArea").value
-    );
+    const clipboard = event.clipboardData || window.clipboardData;
+    clipboard.setData("text/html", document.getElementById("inputArea").value);
   });
 </script>
