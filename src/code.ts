@@ -1,3 +1,4 @@
+import { node } from "webpack";
 import initArrow from "./arrowString";
 
 const { setupConnector, createConnector } = (() => {
@@ -57,11 +58,25 @@ figma.ui.onmessage = ({ type, data }) => {
   switch (type) {
     case "GET_CONNECTOR":
       setupConnector() && figma.ui.postMessage({ type: "CONNECTOR_FOUND" });
+    case "FOCUS_ON_CANVAS":
+      figma.currentPage.selection = [];
+      figma.viewport.zoom = figma.viewport.zoom;
   }
 };
 
-figma.on("selectionchange", () => {
+figma.once("selectionchange", () => {
   const nodes = figma.currentPage.selection;
+
+  if (nodes.length === 1 && nodes[0].type === "CONNECTOR") {
+    const arrow = nodes[0];
+    figma.currentPage.selection = [];
+    figma.currentPage.insertChild(0, arrow);
+    arrow.x = -131100;
+    arrow.y = -131100;
+    arrow.visible = false;
+    arrow.locked = true;
+    arrow.name = "_flow-init-arrow";
+  }
 
   if (nodes.length === 2) {
     createConnector(nodes);

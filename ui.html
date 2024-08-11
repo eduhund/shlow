@@ -1,3 +1,8 @@
+<style>
+  #inputArea {
+    display: none;
+  }
+</style>
 <textarea name="" id="inputArea" cols="30" rows="10"></textarea>
 <script>
   function getConnector(e) {
@@ -15,6 +20,11 @@
           input.focus();
           input.value = data.initArrow;
           document.execCommand("copy");
+          input.blur();
+          parent.postMessage(
+            { pluginMessage: { type: "FOCUS_ON_CANVAS" } },
+            "*"
+          );
         }
     }
   };
