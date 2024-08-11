@@ -19,6 +19,10 @@ function App() {
     }
   }
 
+  function addConnector() {
+    parent.postMessage({ pluginMessage: { type: 'CREATE_CONNECTOR' } }, '*');
+  }
+
   useEffect(() => {
     window.onmessage = (event) => {
       const { type, data } = event.data.pluginMessage;
@@ -54,7 +58,7 @@ function App() {
       {status === 'nodesSettings' && (
         <>
           <p>Can be connected</p>
-          <Button>Connect</Button>
+          <Button onClick={addConnector}>Connect</Button>
         </>
       )}
       <textarea name="" id="inputArea"></textarea>

@@ -88,7 +88,6 @@ figma.ui.onmessage = ({ type, data }) => {
 };
 
 figma.on('selectionchange', () => {
-  console.log('change');
   const nodes = figma.currentPage.selection;
   if (nodes.length === 2 && nodes[0].type !== 'CONNECTOR' && nodes[1].type !== 'CONNECTOR') {
     figma.ui.postMessage({
