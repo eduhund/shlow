@@ -47,6 +47,17 @@ const { checkInitConnector, setInitConnector, createConnector } = (() => {
         magnet: 'AUTO',
       };
       newConnector.connectorLineType = 'ELBOWED';
+      newConnector.visible = true;
+      newConnector.locked = false;
+      newConnector.name = 'Flow Connector';
+      newConnector.strokeWeight = 4;
+      newConnector.strokes = [
+        {
+          type: 'SOLID',
+          color: { r: 0.6, g: 0.6, b: 0.6 },
+          opacity: 0.8,
+        },
+      ];
       figma.currentPage.selection = [newConnector];
     }
   }
