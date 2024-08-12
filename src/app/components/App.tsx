@@ -52,13 +52,33 @@ function App() {
 
   return (
     <>
-      {status === 'waitForConnector' && <p>Press ⌘+P</p>}
-      {status === 'ready' && <p>Choose two nodes to make a flow</p>}
-      {status === 'connectorSettings' && <p>Connector selected</p>}
+      {status === 'waitForConnector' && (
+        <>
+          <h2>Almost done! </h2>
+          <p>
+            Click on the empty space on the canvas (don't select any layer) and press ⌘+V on Mac (or Ctrl+V on Windows).
+          </p>
+          <p>The initial connector will be set up for further work.</p>
+        </>
+      )}
+      {status === 'ready' && (
+        <>
+          <h2>The plugin is ready!</h2>
+          <p>Choose two nodes to make a flow, or select any connector to manage it</p>
+        </>
+      )}
+      {status === 'connectorSettings' && (
+        <>
+          <h2>Connector selected</h2>
+          <p>Settings will be here soon</p>
+        </>
+      )}
       {status === 'nodesSettings' && (
         <>
-          <p>Can be connected</p>
-          <Button onClick={addConnector}>Connect</Button>
+          <p>The layers can be connected!</p>
+          <Button type="primary" onClick={addConnector}>
+            Connect
+          </Button>
         </>
       )}
       <textarea name="" id="inputArea"></textarea>
