@@ -1,5 +1,65 @@
 import connectorTemplate from './arrowString';
 
+function checkIfNested(id = '') {
+  return id.includes(';');
+}
+
+function getParentRecursive(node) {
+  if (checkIfNested(node.id)) {
+    return getParentRecursive(node?.parent);
+  } else return node;
+}
+
+function calculatePosition(firstNode, secondNode) {
+  const { x: firstX, y: firstY, width: firstWidth, height: firstHeight } = firstNode.absoluteBoundingBox;
+  const { x: secondX /*y: secondY, width: secondWidth, height: secondHeight*/ } = secondNode.absoluteBoundingBox;
+
+  const {
+    id: parentNodeId,
+    absoluteBoundingBox: { x: parentX, y: parentY },
+  } = getParentRecursive(firstNode);
+
+  const targetPositionX = firstX - parentX;
+  const targetPositionY = firstY - parentY;
+
+  if (firstX > secondX) {
+    return {
+      parentNodeId,
+      endpointPosition: {
+        x: targetPositionX,
+        y: targetPositionY + firstHeight / 2,
+      },
+    };
+  } else {
+    return {
+      parentNodeId,
+      endpointPosition: {
+        x: targetPositionX + firstWidth,
+        y: targetPositionY + firstHeight / 2,
+      },
+    };
+  }
+}
+
+function createConnectorEdge(nodes, position): ConnectorEndpoint {
+  const positionIndex = position === 'start' ? 1 : 0;
+  if (checkIfNested(nodes[positionIndex].id)) {
+    const oppositePositionIndex = position === 'end' ? 1 : 0;
+
+    const { parentNodeId, endpointPosition } = calculatePosition(nodes[positionIndex], nodes[oppositePositionIndex]);
+
+    return {
+      endpointNodeId: parentNodeId,
+      position: endpointPosition,
+    };
+  } else {
+    return {
+      endpointNodeId: nodes[positionIndex].id,
+      magnet: 'AUTO',
+    };
+  }
+}
+
 const { checkInitConnector, setInitConnector, createConnector } = (() => {
   let initConnector: ConnectorNode | null = null;
 
@@ -38,14 +98,8 @@ const { checkInitConnector, setInitConnector, createConnector } = (() => {
   function createConnector(nodes: readonly SceneNode[]) {
     if (initConnector) {
       const newConnector = initConnector.clone();
-      newConnector.connectorStart = {
-        endpointNodeId: nodes[0].id,
-        magnet: 'AUTO',
-      };
-      newConnector.connectorEnd = {
-        endpointNodeId: nodes[1].id,
-        magnet: 'AUTO',
-      };
+      newConnector.connectorStart = createConnectorEdge(nodes, 'start');
+      newConnector.connectorEnd = createConnectorEdge(nodes, 'end');
       newConnector.connectorLineType = 'ELBOWED';
       newConnector.visible = true;
       newConnector.locked = false;
@@ -107,6 +161,7 @@ figma.on('selectionchange', () => {
     return;
   }
   if (nodes.length === 1 && nodes[0].type === 'CONNECTOR') {
+    console.log(nodes);
     figma.ui.postMessage({
       type: 'CONFIG_CONNECTOR',
     });
