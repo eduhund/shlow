@@ -1,27 +1,12 @@
-import { checkInitConnector, setInitConnector, createConnector } from './connector';
+import { checkInitConnector, createConnector } from './connector';
 import { getQueue, updateQueue } from './selectionQueue';
+
+checkInitConnector();
 
 figma.showUI(__html__, {
   width: 340,
   height: 320,
 });
-
-!checkInitConnector() &&
-  figma.once('selectionchange', () => {
-    const nodes = figma.currentPage.selection;
-
-    if (nodes.length === 1 && nodes[0].type === 'CONNECTOR') {
-      const arrow = nodes[0];
-      figma.currentPage.selection = [];
-      figma.currentPage.insertChild(0, arrow);
-      arrow.x = -131100;
-      arrow.y = -131100;
-      arrow.visible = false;
-      arrow.locked = true;
-      arrow.name = '_flow-init-connector';
-      setInitConnector(arrow);
-    }
-  });
 
 figma.ui.onmessage = ({ type, data }) => {
   data;

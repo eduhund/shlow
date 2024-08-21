@@ -71,6 +71,21 @@ export const { checkInitConnector, setInitConnector, createConnector } = (() => 
     initConnector = allConnectors.find((connector) => connector.name === '_flow-init-connector') || null;
 
     if (!initConnector) {
+      figma.once('selectionchange', () => {
+        const nodes = figma.currentPage.selection;
+
+        if (nodes.length === 1 && nodes[0].type === 'CONNECTOR') {
+          const arrow = nodes[0];
+          figma.currentPage.selection = [];
+          figma.currentPage.insertChild(0, arrow);
+          arrow.x = -131100;
+          arrow.y = -131100;
+          arrow.visible = false;
+          arrow.locked = true;
+          arrow.name = '_flow-init-connector';
+          setInitConnector(arrow);
+        }
+      });
       figma.ui.postMessage({
         type: 'GET_INIT_CONNECTOR',
         data: { connectorTemplate },
