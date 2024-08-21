@@ -1,4 +1,5 @@
 import connectorTemplate from './arrowString';
+import { getQueue, updateQueue } from './selectionQueue';
 
 function checkIfNested(id = '') {
   return id.includes(';');
@@ -42,9 +43,9 @@ function calculatePosition(firstNode, secondNode) {
 }
 
 function createConnectorEdge(nodes, position): ConnectorEndpoint {
-  const positionIndex = position === 'start' ? 1 : 0;
+  const positionIndex = position === 'end' ? 1 : 0;
   if (checkIfNested(nodes[positionIndex].id)) {
-    const oppositePositionIndex = position === 'end' ? 1 : 0;
+    const oppositePositionIndex = position === 'end' ? 0 : 1;
 
     const { parentNodeId, endpointPosition } = calculatePosition(nodes[positionIndex], nodes[oppositePositionIndex]);
 
@@ -151,20 +152,20 @@ figma.ui.onmessage = ({ type, data }) => {
       figma.currentPage.selection = [];
       figma.viewport.zoom = figma.viewport.zoom;
     case 'CREATE_CONNECTOR':
-      createConnector(figma.currentPage.selection);
+      createConnector(getQueue());
   }
 };
 
 figma.on('selectionchange', () => {
   const nodes = figma.currentPage.selection;
-  if (nodes.length === 2 && nodes[0].type !== 'CONNECTOR' && nodes[1].type !== 'CONNECTOR') {
+  const selectionQueue = updateQueue(nodes);
+  if (selectionQueue.length === 2 && selectionQueue[0].type !== 'CONNECTOR' && selectionQueue[1].type !== 'CONNECTOR') {
     figma.ui.postMessage({
       type: 'CONFIG_NODES',
     });
     return;
   }
-  if (nodes.length === 1 && nodes[0].type === 'CONNECTOR') {
-    console.log(nodes);
+  if (selectionQueue.length === 1 && selectionQueue[0].type === 'CONNECTOR') {
     figma.ui.postMessage({
       type: 'CONFIG_CONNECTOR',
     });
