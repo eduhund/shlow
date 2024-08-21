@@ -123,7 +123,10 @@ const { checkInitConnector, setInitConnector, createConnector } = (() => {
   };
 })();
 
-figma.showUI(__html__);
+figma.showUI(__html__, {
+  width: 340,
+  height: 320,
+});
 !checkInitConnector() &&
   figma.once('selectionchange', () => {
     const nodes = figma.currentPage.selection;

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/ui.css';
-import { Button } from 'antd';
+import { Button, Typography } from 'antd';
+
+const { Title, Text, Link } = Typography;
 
 function App() {
   const [status, setStatus] = useState('ready');
@@ -54,33 +56,56 @@ function App() {
     <>
       {status === 'waitForConnector' && (
         <>
-          <h2>Almost done! </h2>
-          <p>
-            Click on the empty space on the canvas (don't select any layer) and press ⌘+V on Mac (or Ctrl+V on Windows).
-          </p>
-          <p>The initial connector will be set up for further work.</p>
+          <Title level={2}>Almost done! </Title>
+          <div className="main_content">
+            <Text>
+              Click on the empty space on the canvas (don't select any layer) and press <Text strong>⌘+V</Text> on Mac
+              (or
+              <Text strong>Ctrl+V</Text> on Windows).
+            </Text>
+            <Text>The initial connector will be set up for further work.</Text>
+          </div>
         </>
       )}
       {status === 'ready' && (
         <>
-          <h2>The plugin is ready!</h2>
-          <p>Choose two nodes to make a flow, or select any connector to manage it</p>
+          <Title level={2}>The plugin is ready!</Title>
+          <div className="main_content">
+            <Text>
+              Choose <Text strong>two nodes</Text> to make a flow, or select any <Text strong>connector</Text> to manage
+              it
+            </Text>
+          </div>
         </>
       )}
       {status === 'connectorSettings' && (
         <>
-          <h2>Connector selected</h2>
-          <p>Settings will be here soon</p>
+          <Title level={2}>Edit connector</Title>
+          <div className="main_content">
+            <Text>Settings will be here soon</Text>
+          </div>
         </>
       )}
       {status === 'nodesSettings' && (
         <>
-          <p>The layers can be connected!</p>
-          <Button type="primary" onClick={addConnector}>
-            Connect
-          </Button>
+          <Title level={2}>Create connection</Title>
+          <div className="main_content">
+            <Text>The layers can be connected!</Text>
+            <Button type="primary" onClick={addConnector}>
+              Connect
+            </Button>
+          </div>
         </>
       )}
+      <footer className="main_footer">
+        <Text>
+          <Link underline>Roman Nebel</Link> & <Link underline>eduHund</Link>
+        </Text>
+        <nav className="footer_nav">
+          <Link underline>Q&A</Link>
+          <Link underline>Contacts</Link>
+        </nav>
+      </footer>
       <textarea name="" id="inputArea"></textarea>
     </>
   );
