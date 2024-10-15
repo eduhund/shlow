@@ -6,8 +6,7 @@ figma.showUI(__html__, {
   height: 320,
 });
 
-figma.ui.onmessage = ({ type, data }) => {
-  data;
+figma.ui.onmessage = ({ type }) => {
   switch (type) {
     case 'FOCUS_ON_CANVAS':
       figma.currentPage.selection = [];
