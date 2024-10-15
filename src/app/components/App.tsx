@@ -65,7 +65,8 @@ function App() {
               (or
               <Text strong>Ctrl+V</Text> on Windows).
             </Text>
-            <Text>The initial connector will be set up for further work.</Text>
+            <br></br>
+            <Text>The initial connector will be set up for the further work.</Text>
           </div>
         </>
       )}
