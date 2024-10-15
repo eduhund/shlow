@@ -60,15 +60,26 @@ function createConnectorEdge(nodes, position): ConnectorEndpoint {
   }
 }
 
-export const { checkInitConnector, setInitConnector, createConnector } = (() => {
+export const { checkInitConnector, setInitConnector, createInitConnector, createConnector } = (() => {
   let initConnector: ConnectorNode | null = null;
 
   function checkInitConnector() {
+    if (initConnector?.removed) initConnector = null;
+    return Boolean(initConnector);
+  }
+
+  function setInitConnector(node: ConnectorNode) {
+    initConnector = node;
+  }
+
+  function createInitConnector() {
     const allConnectors = figma.currentPage.findAllWithCriteria({
       types: ['CONNECTOR'],
     });
 
-    initConnector = allConnectors.find((connector) => connector.name === '_flow-init-connector') || null;
+    const defaultConnector = allConnectors.find((connector) => connector.name === '_flow-init-connector');
+
+    initConnector = defaultConnector || allConnectors[0] || null;
 
     if (!initConnector) {
       figma.once('selectionchange', () => {
@@ -101,12 +112,8 @@ export const { checkInitConnector, setInitConnector, createConnector } = (() => 
     return true;
   }
 
-  function setInitConnector(node: ConnectorNode) {
-    initConnector = node;
-  }
-
   function createConnector(nodes: readonly SceneNode[]) {
-    if (initConnector) {
+    if (checkInitConnector() || createInitConnector()) {
       const newConnector = initConnector.clone();
       newConnector.connectorStart = createConnectorEdge(nodes, 'start');
       newConnector.connectorEnd = createConnectorEdge(nodes, 'end');
@@ -129,6 +136,7 @@ export const { checkInitConnector, setInitConnector, createConnector } = (() => 
   return {
     checkInitConnector,
     setInitConnector,
+    createInitConnector,
     createConnector,
   };
 })();

@@ -1,4 +1,4 @@
-import { checkInitConnector, createConnector } from './connector';
+import { createInitConnector, createConnector, checkInitConnector } from './connector';
 import { getQueue, updateQueue } from './selectionQueue';
 
 figma.showUI(__html__, {
@@ -16,7 +16,7 @@ figma.ui.onmessage = ({ type }) => {
       createConnector(getQueue());
       break;
     case 'UI_READY':
-      checkInitConnector();
+      createInitConnector();
       break;
   }
 };
@@ -34,6 +34,10 @@ figma.on('selectionchange', () => {
     figma.ui.postMessage({
       type: 'CONFIG_CONNECTOR',
     });
+    return;
+  }
+
+  if (!checkInitConnector()) {
     return;
   }
 
