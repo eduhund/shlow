@@ -1,3 +1,5 @@
+import connectorTemplate from './arrowString';
+
 function checkIfNested(id = '') {
   return id.includes(';');
 }
@@ -87,6 +89,12 @@ export const { checkInitConnector, setInitConnector, createConnector } = (() => 
           });
         }
       });
+
+      figma.ui.postMessage({
+        type: 'GET_INIT_CONNECTOR',
+        data: { connectorTemplate },
+      });
+
       return false;
     }
 

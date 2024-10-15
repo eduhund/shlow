@@ -1,6 +1,5 @@
 import { checkInitConnector, createConnector } from './connector';
 import { getQueue, updateQueue } from './selectionQueue';
-import connectorTemplate from './arrowString';
 
 figma.showUI(__html__, {
   width: 340,
@@ -18,12 +17,8 @@ figma.ui.onmessage = ({ type, data }) => {
       createConnector(getQueue());
       break;
     case 'UI_READY':
-      if (!checkInitConnector()) {
-        figma.ui.postMessage({
-          type: 'GET_INIT_CONNECTOR',
-          data: { connectorTemplate },
-        });
-      }
+      checkInitConnector();
+      break;
   }
 };
 
