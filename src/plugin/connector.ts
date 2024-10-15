@@ -82,6 +82,9 @@ export const { checkInitConnector, setInitConnector, createConnector } = (() => 
           arrow.locked = true;
           arrow.name = '_flow-init-connector';
           setInitConnector(arrow);
+          figma.ui.postMessage({
+            type: 'SET_READY',
+          });
         }
       });
       return false;
@@ -89,16 +92,6 @@ export const { checkInitConnector, setInitConnector, createConnector } = (() => 
 
     return true;
   }
-
-  //function getInitConnector() {
-  //  return (
-  //    initConnector ||
-  //    figma.ui.postMessage({
-  //      type: 'GET_INIT_CONNECTOR',
-  //      data: { connectorTemplate },
-  //    })
-  //  );
-  //}
 
   function setInitConnector(node: ConnectorNode) {
     initConnector = node;
