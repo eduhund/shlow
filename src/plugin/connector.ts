@@ -1,5 +1,3 @@
-import connectorTemplate from './arrowString';
-
 function checkIfNested(id = '') {
   return id.includes(';');
 }
@@ -85,10 +83,6 @@ export const { checkInitConnector, setInitConnector, createConnector } = (() => 
           arrow.name = '_flow-init-connector';
           setInitConnector(arrow);
         }
-      });
-      figma.ui.postMessage({
-        type: 'GET_INIT_CONNECTOR',
-        data: { connectorTemplate },
       });
       return false;
     }

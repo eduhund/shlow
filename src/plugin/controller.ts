@@ -1,7 +1,6 @@
 import { checkInitConnector, createConnector } from './connector';
 import { getQueue, updateQueue } from './selectionQueue';
-
-checkInitConnector();
+import connectorTemplate from './arrowString';
 
 figma.showUI(__html__, {
   width: 340,
@@ -14,8 +13,17 @@ figma.ui.onmessage = ({ type, data }) => {
     case 'FOCUS_ON_CANVAS':
       figma.currentPage.selection = [];
       figma.viewport.zoom = figma.viewport.zoom;
+      break;
     case 'CREATE_CONNECTOR':
       createConnector(getQueue());
+      break;
+    case 'UI_READY':
+      if (!checkInitConnector()) {
+        figma.ui.postMessage({
+          type: 'GET_INIT_CONNECTOR',
+          data: { connectorTemplate },
+        });
+      }
   }
 };
 

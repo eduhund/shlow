@@ -43,6 +43,8 @@ function App() {
           setStatus('ready');
       }
     };
+
+    parent.postMessage({ pluginMessage: { type: 'UI_READY' } }, '*');
   }, []);
 
   document.addEventListener('copy', function (event) {
