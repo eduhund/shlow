@@ -56,53 +56,56 @@ function App() {
 
   return (
     <>
-      {status === 'waitForConnector' && (
-        <>
-          <Title level={2}>Almost done! </Title>
-          <div className="main_content">
-            <Text>
-              Click on the empty space on the canvas (don't select any layer) and press <Text strong>⌘+V</Text> on Mac
-              (or
-              <Text strong>Ctrl+V</Text> on Windows).
-            </Text>
-            <br></br>
-            <Text>The initial connector will be set up for the further work.</Text>
-          </div>
-        </>
-      )}
-      {status === 'ready' && (
-        <>
-          <Title level={2}>The plugin is ready!</Title>
-          <div className="main_content">
-            <Text>
-              Choose <Text strong>two nodes</Text> to make a flow, or select any <Text strong>connector</Text> to manage
-              it
-            </Text>
-          </div>
-        </>
-      )}
-      {status === 'connectorSettings' && (
-        <>
-          <Title level={2}>Edit connector</Title>
-          <div className="main_content">
-            <Text>Settings will be here soon</Text>
-          </div>
-        </>
-      )}
-      {status === 'nodesSettings' && (
-        <>
-          <Title level={2}>Create connection</Title>
-          <div className="main_content">
-            <Text>The layers can be connected!</Text>
-            <Button type="primary" onClick={addConnector}>
-              Connect
-            </Button>
-          </div>
-        </>
-      )}
+      <div id={status}>
+        {status === 'waitForConnector' && (
+          <>
+            <Title level={2}>Almost done! </Title>
+            <div className="main_content">
+              <Text>
+                Click on the empty space on the canvas (don't select any layer) and press <Text strong>⌘+V</Text> on Mac
+                (or
+                <Text strong>Ctrl+V</Text> on Windows).
+              </Text>
+              <br></br>
+              <Text>The initial connector will be set up for the further work.</Text>
+            </div>
+          </>
+        )}
+        {status === 'ready' && (
+          <>
+            <Title level={2}>The plugin is ready!</Title>
+            <div className="main_content">
+              <Text>
+                Choose <Text strong>two nodes</Text> to make a flow, or select any <Text strong>connector</Text> to
+                manage it
+              </Text>
+            </div>
+          </>
+        )}
+        {status === 'connectorSettings' && (
+          <>
+            <Title level={2}>Edit connector</Title>
+            <div className="main_content">
+              <Text>Settings will be here soon</Text>
+            </div>
+          </>
+        )}
+        {status === 'nodesSettings' && (
+          <>
+            <Title level={2}>Create connection</Title>
+            <div className="main_content">
+              <Text>The layers can be connected!</Text>
+              <br></br>
+              <Button type="primary" onClick={addConnector}>
+                Connect
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
       <footer className="main_footer">
         <Text>
-          <Link underline>Roman Nebel</Link> & <Link underline>eduHund</Link>
+          <Link underline>Roman Nebel</Link> → <Link underline>eduHund</Link>
         </Text>
         <nav className="footer_nav">
           <Link underline>Q&A</Link>

@@ -1,4 +1,6 @@
 body {
+  position: relative;
+
   display: flex;
   flex-direction: column;
   margin: 0;
@@ -6,6 +8,41 @@ body {
   gap: 16px;
 
   background: #ffffff;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.25;
+  z-index: -1;
+}
+
+body:has(#waitForConnector)::before {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 800 800"><g stroke-width="30" stroke="hsl(341, 100%, 85%)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M250 250Q566 279 400 400Q154 539 550 550 " marker-end="url(%23SvgjsMarker1351)"></path></g><defs><marker markerWidth="6" markerHeight="6" refX="3" refY="3" viewBox="0 0 6 6" orient="auto" id="SvgjsMarker1351"><polyline points="0,3 3,1.5 0,0" fill="none" stroke-width="1" stroke="hsl(341, 100%, 85%)" stroke-linecap="round" transform="matrix(1,0,0,1,1,1.5)" stroke-linejoin="round"></polyline></marker></defs></svg>');
+}
+
+body:has(#ready)::before {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 800 800"><g stroke-width="30" stroke="hsl(180, 69%, 30%)" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="matrix(0.20791169081775857,-0.9781476007338058,0.9781476007338058,0.20791169081775857,-75.42371662062578,728.0943639664189)"><line x1="309.5" y1="309.5" x2="490.5" y2="490.5" marker-end="url(%23SvgjsMarker1739)"></line></g><defs><marker markerWidth="6" markerHeight="6" refX="3" refY="3" viewBox="0 0 6 6" orient="auto" id="SvgjsMarker1739"><polyline points="0,3 3,1.5 0,0" fill="none" stroke-width="1" stroke="hsl(180, 69%, 30%)" stroke-linecap="round" transform="matrix(1,0,0,1,1,1.5)" stroke-linejoin="round"></polyline></marker></defs></svg>');
+}
+
+body:has(#connectorSettings)::before {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 800 800"><g stroke-width="30" stroke="hsl(50, 98%, 50%)" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="matrix(-0.7193398003386511,-0.6946583704589974,0.6946583704589974,-0.7193398003386511,421.8725719518615,987.5992683190593)"><line x1="372.5" y1="372.5" x2="427.5" y2="427.5" marker-end="url(%23SvgjsMarker4122)"></line></g><defs><marker markerWidth="6" markerHeight="6" refX="3" refY="3" viewBox="0 0 6 6" orient="auto" id="SvgjsMarker4122"><polyline points="0,3 3,1.5 0,0" fill="none" stroke-width="1" stroke="hsl(50, 98%, 50%)" stroke-linecap="round" transform="matrix(1,0,0,1,1,1.5)" stroke-linejoin="round"></polyline></marker></defs></svg>');
+}
+
+body:has(#nodesSettings)::before {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 800 800"><g stroke-width="30" stroke="hsl(205, 69%, 50%)" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="matrix(0.9702957262759965,0.24192189559966773,-0.24192189559966773,0.9702957262759965,120.65046772946852,-62.887048750265706)"><path d="M223.437744140625 253Q-20.562255859375 383 370.437744140625 400Q884.437744140625 408 517.437744140625 547 " marker-end="url(%23SvgjsMarker4013)" marker-start="url(%23SvgjsMarker4014)"></path></g><defs><marker markerWidth="6" markerHeight="6" refX="3" refY="3" viewBox="0 0 6 6" orient="auto" id="SvgjsMarker4013"><polyline points="0,3 3,1.5 0,0" fill="none" stroke-width="1" stroke="hsl(205, 69%, 50%)" stroke-linecap="round" transform="matrix(1,0,0,1,1,1.5)" stroke-linejoin="round"></polyline></marker><marker markerWidth="6" markerHeight="6" refX="3" refY="3" viewBox="0 0 6 6" orient="auto" id="SvgjsMarker4014"><polyline points="3,3 0,1.5 3,0" fill="none" stroke-width="1" stroke="hsl(205, 69%, 50%)" stroke-linecap="round" transform="matrix(1,0,0,1,2,1.5)" stroke-linejoin="round"></polyline></marker></defs></svg>');
+}
+
+body:has(#reset)::before {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 800 800"><g stroke-width="30" stroke="hsl(335, 77%, 50%)" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="matrix(-0.984807753012208,0.17364817766693028,-0.17364817766693028,-0.984807753012208,875.3823722716553,791.4638301381111)"><path d="M381.18017578125 304.45501708984375Q22.18017578125 539.4550170898438 562.18017578125 485.45501708984375 " marker-end="url(%23SvgjsMarker2394)"></path></g><defs><marker markerWidth="6" markerHeight="6" refX="3" refY="3" viewBox="0 0 6 6" orient="auto" id="SvgjsMarker2394"><polyline points="0,3 3,1.5 0,0" fill="none" stroke-width="1" stroke="hsl(335, 77%, 50%)" stroke-linecap="round" transform="matrix(1,0,0,1,1,1.5)" stroke-linejoin="round"></polyline></marker></defs></svg>');
 }
 
 h1,

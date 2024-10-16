@@ -1,7 +1,7 @@
 {
-  "name": "figma-plugin-react-template",
-  "version": "0.2.2",
-  "description": "This plugin template uses Typescript. If you are familiar with Javascript, Typescript will look very familiar. In fact, valid Javascript code is already valid Typescript code.",
+  "name": "shlow",
+  "version": "0.2.3",
+  "description": "Creating documentation in Figma file without prototyping",
   "license": "MIT",
   "author": "Roman Nebel",
   "scripts": {
