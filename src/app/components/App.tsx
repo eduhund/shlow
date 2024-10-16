@@ -64,7 +64,7 @@ function App() {
               <Text>
                 Click on the empty space on the canvas (don't select any layer) and press <Text strong>⌘+V</Text> on Mac
                 (or
-                <Text strong>Ctrl+V</Text> on Windows).
+                <Text strong> Ctrl+V</Text> on Windows).
               </Text>
               <br></br>
               <Text>The initial connector will be set up for the further work.</Text>
