@@ -111,6 +111,7 @@ async function run() {
 
   if (result) {
     figma.ui.show();
+    closeNotify();
   } else {
     const timeFromFirstRun = figma?.payments?.getUserFirstRanSecondsAgo() || 0;
     const trialTime = 7;

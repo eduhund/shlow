@@ -1,6 +1,6 @@
 {
-  "name": "Shlow — Create documentation in Figma file without prototyping",
-  "id": "1402728174755846775",
+  "name": "Shlow — Link Figma layouts in one user flow",
+  "id": "1438107725155783397",
   "api": "1.0.0",
   "main": "dist/code.js",
   "capabilities": [],
