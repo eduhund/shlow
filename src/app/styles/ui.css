@@ -80,3 +80,70 @@ h5 {
   display: flex;
   gap: 8px;
 }
+
+ul,
+ol {
+  padding-left: 1.2em;
+}
+
+li {
+  margin-bottom: 6px;
+}
+
+input {
+  border-color: #19676c;
+  padding: 4px 6px;
+  border-width: 1px;
+  border-radius: 4px;
+}
+
+input::placeholder {
+  opacity: 0.6;
+}
+
+button {
+  color: #ffffff;
+  background-color: #114e52;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 12px;
+}
+
+button:hover {
+  background-color: #0a3a3e;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+footer p {
+  margin: 0;
+}
+
+footer span {
+  opacity: 0.6;
+}
+
+.block {
+  margin-bottom: 2em;
+}
+
+.subscription_form {
+  display: flex;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.subscription_form input {
+  flex-grow: 1;
+}
+
+.email_error {
+  color: #ff6347;
+}
+
+._hidden {
+  display: none;
+}

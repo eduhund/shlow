@@ -4,7 +4,98 @@ import { Button, Typography } from 'antd';
 
 const { Title, Text, Link } = Typography;
 
-function App() {
+type PageType = 'main' | 'buy';
+
+type GeneralPageProps = {
+  navTo: (page: PageType) => void;
+};
+
+function Buy({ navTo }: GeneralPageProps) {
+  const [isEmailValid, setIsEmailValid] = useState(true);
+
+  function checkSubscription(event) {
+    event.preventDefault();
+    setIsEmailValid(true);
+    const email = event.target[0]?.value;
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: 'CHECK_EMAIL',
+          email,
+        },
+      },
+      '*'
+    );
+  }
+
+  useEffect(() => {
+    window.onmessage = (event) => {
+      const { type, data } = event.data.pluginMessage;
+
+      switch (type) {
+        case 'EMAIL_STATUS':
+          setIsEmailValid(data);
+      }
+    };
+  }, []);
+
+  return (
+    <>
+      <Button type="link" onClick={() => navTo('main')}>
+        Back
+      </Button>
+      <div className="block features">
+        <Title level={3}>What will you get?</Title>
+        <ul>
+          <li>
+            <Text>Freedom to create as detailed user flows as you need</Text>
+          </li>
+          <li>
+            <Text>All future updates</Text>
+          </li>
+        </ul>
+      </div>
+      <div className="block instruction">
+        <Title level={3}>Steps to buy</Title>
+        <ol>
+          <li>
+            <Text>
+              Go to the <Link href="https://eduhund.gumroad.com/l/shlow">Shlow page</Link> on Gumroad and join the
+              monthly subscription. In the order provide a valid email and your name to continue
+            </Text>
+          </li>
+          <li>
+            <Text>
+              Wait 1-2 minutes (while we receive your subscription details) and enter the email you provided on Gumroad
+            </Text>
+          </li>
+          <form className="subscription_form" onSubmit={checkSubscription}>
+            <input type="email" placeholder="type@email.here" />
+            <button type="submit">Check</button>
+          </form>
+          <span id="email_error" className={'email_error' + isEmailValid && ' _hidden'}>
+            We can't find this email
+          </span>
+        </ol>
+        <Text>When succeed, this modal will close and you can start using the plugin.</Text>
+        <Text>
+          Please <a href="mailto:we@eduhund.com">contact us</a> if you experience any problems.
+        </Text>
+      </div>
+      <footer className="main_footer">
+        <Text>
+          <Link underline>Roman Nebel</Link> → <Link underline>eduHund</Link>
+        </Text>
+        <nav className="footer_nav">
+          <Link underline>Q&A</Link>
+          <Link underline>Contact us</Link>
+        </nav>
+      </footer>
+    </>
+  );
+}
+
+function Main() {
   const [status, setStatus] = useState('ready');
   function getInput() {
     return document.getElementById('inputArea') as HTMLInputElement;
@@ -109,10 +200,39 @@ function App() {
         </Text>
         <nav className="footer_nav">
           <Link underline>Q&A</Link>
-          <Link underline>Contacts</Link>
+          <Link underline>Contact us</Link>
         </nav>
       </footer>
       <textarea name="" id="inputArea"></textarea>
+    </>
+  );
+}
+
+function App() {
+  const [currentPage, setCurrentPage] = useState('main');
+
+  function changeCurrentPageHandler(page: PageType) {
+    setCurrentPage(page);
+  }
+
+  useEffect(() => {
+    window.onmessage = (event) => {
+      const { type, data } = event.data.pluginMessage;
+      switch (type) {
+        case 'NAV':
+          const { page } = data;
+          changeCurrentPageHandler(page);
+          return;
+      }
+    };
+
+    parent.postMessage({ pluginMessage: { type: 'UI_READY' } }, '*');
+  }, []);
+
+  return (
+    <>
+      {currentPage === 'main' && <Main />}
+      {currentPage === 'buy' && <Buy navTo={changeCurrentPageHandler} />}
     </>
   );
 }
