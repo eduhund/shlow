@@ -1,7 +1,14 @@
 import { createInitConnector, createConnector, checkInitConnector } from './connector';
 import { getQueue, updateQueue } from './selectionQueue';
 
-figma.ui.onmessage = ({ type }) => {
+figma.showUI(__html__, {
+  visible: false,
+  width: 340,
+  height: 320,
+});
+
+figma.ui.onmessage = async (message) => {
+  const { type } = message;
   switch (type) {
     case 'FOCUS_ON_CANVAS':
       figma.currentPage.selection = [];
@@ -11,8 +18,15 @@ figma.ui.onmessage = ({ type }) => {
       createConnector(getQueue());
       break;
     case 'UI_READY':
+      console.log('fire');
       createInitConnector();
       break;
+    case 'checkEmail': {
+      const { email } = message;
+      const result = await checkSubscription(email);
+
+      figma.ui.postMessage({ type: 'EMAIL_STATUS', data: result });
+    }
   }
 };
 
@@ -94,11 +108,6 @@ async function checkSubscription(email?: string) {
 }
 
 async function run() {
-  figma.showUI(__html__, {
-    visible: false,
-    width: 340,
-    height: 320,
-  });
   showNotify('Cheking your subscription...', {
     timeout: Infinity,
   });
@@ -140,7 +149,6 @@ async function run() {
         },
       });
     } else {
-      figma.ui.show();
       showNotify(`Welcome to Shlow trial (${trialTime} day${trialTime > 1 ? 's' : ''} remaining)`, {
         timeout: Infinity,
         button: {
@@ -161,21 +169,9 @@ async function run() {
           }
         },
       });
+      figma.ui.show();
     }
   }
 }
 
 run();
-
-figma.ui.onmessage = async (message) => {
-  const { type } = message;
-
-  switch (type) {
-    case 'checkEmail': {
-      const { email } = message;
-      const result = await checkSubscription(email);
-
-      figma.ui.postMessage({ type: 'EMAIL_STATUS', data: result });
-    }
-  }
-};

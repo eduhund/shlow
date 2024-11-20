@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../styles/ui.css';
 import { Button, Typography } from 'antd';
 
@@ -10,13 +10,11 @@ type GeneralPageProps = {
   navTo: (page: PageType) => void;
 };
 
-function Buy({ navTo }: GeneralPageProps) {
+const Buy = React.forwardRef(({ navTo }: GeneralPageProps, ref: React.Ref<any>) => {
   const [isEmailValid, setIsEmailValid] = useState(true);
 
-  function checkSubscription(event) {
-    event.preventDefault();
+  function checkSubscription(email) {
     setIsEmailValid(true);
-    const email = event.target[0]?.value;
     parent.postMessage(
       {
         pluginMessage: {
@@ -28,16 +26,9 @@ function Buy({ navTo }: GeneralPageProps) {
     );
   }
 
-  useEffect(() => {
-    window.onmessage = (event) => {
-      const { type, data } = event.data.pluginMessage;
-
-      switch (type) {
-        case 'EMAIL_STATUS':
-          setIsEmailValid(data);
-      }
-    };
-  }, []);
+  React.useImperativeHandle(ref, () => ({
+    checkSubscription,
+  }));
 
   return (
     <>
@@ -101,9 +92,9 @@ function Buy({ navTo }: GeneralPageProps) {
       </footer>
     </>
   );
-}
+});
 
-function Main() {
+const Main = React.forwardRef(({}, ref: React.Ref<any>) => {
   const [status, setStatus] = useState('ready');
   function getInput() {
     return document.getElementById('inputArea') as HTMLInputElement;
@@ -124,34 +115,17 @@ function Main() {
     parent.postMessage({ pluginMessage: { type: 'CREATE_CONNECTOR' } }, '*');
   }
 
-  useEffect(() => {
-    window.onmessage = (event) => {
-      const { type, data } = event.data.pluginMessage;
-      switch (type) {
-        case 'GET_INIT_CONNECTOR':
-          getConnector(data.connectorTemplate);
-          setStatus('waitForConnector');
-          return;
-        case 'CONFIG_NODES':
-          setStatus('nodesSettings');
-          return;
-        case 'CONFIG_CONNECTOR':
-          setStatus('connectorSettings');
-          return;
-        default:
-          setStatus('ready');
-      }
-    };
-
-    parent.postMessage({ pluginMessage: { type: 'UI_READY' } }, '*');
-  }, []);
-
   document.addEventListener('copy', function (event) {
     event.preventDefault();
     const clipboard = event.clipboardData;
     const input = getInput();
     clipboard.setData('text/html', input.value);
   });
+
+  React.useImperativeHandle(ref, () => ({
+    getConnector,
+    setStatus,
+  }));
 
   return (
     <>
@@ -222,10 +196,13 @@ function Main() {
       <textarea name="" id="inputArea"></textarea>
     </>
   );
-}
+});
 
 function App() {
   const [currentPage, setCurrentPage] = useState('main');
+
+  const mainRef = useRef<any>(null);
+  const buyRef = useRef<any>(null);
 
   function changeCurrentPageHandler(page: PageType) {
     setCurrentPage(page);
@@ -239,6 +216,20 @@ function App() {
           const { page } = data;
           changeCurrentPageHandler(page);
           return;
+        case 'EMAIL_STATUS':
+          buyRef.current.checkSubscription(data?.email);
+        case 'GET_INIT_CONNECTOR':
+          mainRef.current.getConnector(data.connectorTemplate);
+          mainRef.current.setStatus('waitForConnector');
+          return;
+        case 'CONFIG_NODES':
+          mainRef.current.setStatus('nodesSettings');
+          return;
+        case 'CONFIG_CONNECTOR':
+          mainRef.current.setStatus('connectorSettings');
+          return;
+        default:
+          mainRef.current.setStatus('ready');
       }
     };
 
@@ -247,8 +238,8 @@ function App() {
 
   return (
     <>
-      {currentPage === 'main' && <Main />}
-      {currentPage === 'buy' && <Buy navTo={changeCurrentPageHandler} />}
+      {currentPage === 'main' && <Main ref={mainRef} />}
+      {currentPage === 'buy' && <Buy ref={buyRef} navTo={changeCurrentPageHandler} />}
     </>
   );
 }
