@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../styles/ui.css';
-import { Button, Typography } from 'antd';
+import { Button, Input, Tooltip, Typography, Space } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const { Title, Text, Link } = Typography;
 
@@ -11,23 +12,37 @@ type GeneralPageProps = {
 };
 
 const Buy = React.forwardRef(({ navTo }: GeneralPageProps, ref: React.Ref<any>) => {
-  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [emailValue, setEmailValue] = useState(null);
+  const [isEmailValid, setIsEmailValid] = useState(null);
+  const [isChecking, setIsChecking] = useState(false);
 
-  function checkSubscription(email) {
-    setIsEmailValid(true);
+  function checkSubscription(e) {
+    e.preventDefault();
+    setIsEmailValid(null);
+    setIsChecking(true);
     parent.postMessage(
       {
         pluginMessage: {
           type: 'CHECK_EMAIL',
-          email,
+          email: emailValue,
         },
       },
       '*'
     );
   }
 
+  function emailCheckHandler(result) {
+    setIsChecking(false);
+    setIsEmailValid(result);
+  }
+
+  function emailValueHandler(value) {
+    setIsEmailValid(null);
+    setEmailValue(value);
+  }
+
   React.useImperativeHandle(ref, () => ({
-    checkSubscription,
+    emailCheckHandler,
   }));
 
   return (
@@ -60,13 +75,35 @@ const Buy = React.forwardRef(({ navTo }: GeneralPageProps, ref: React.Ref<any>) 
               Wait 1-2 minutes (while we receive your subscription details) and enter the email you provided on Gumroad
             </Text>
           </li>
-          <form className="subscription_form" onSubmit={checkSubscription}>
-            <input type="email" placeholder="type@email.here" />
-            <button type="submit">Check</button>
-          </form>
-          <span id="email_error" className={'email_error' + isEmailValid && ' _hidden'}>
-            We can't find this email
-          </span>
+          <div>
+            <Space.Compact style={{ width: '100%' }}>
+              <Input
+                type="email"
+                value={emailValue}
+                placeholder="your@email.here"
+                status={isEmailValid === false ? 'error' : null}
+                disabled={isChecking}
+                suffix={
+                  isEmailValid === false ? (
+                    <Tooltip title="We didn't find your email. Please, check it or contact us.">
+                      <ExclamationCircleOutlined style={{ color: 'red' }} />
+                    </Tooltip>
+                  ) : null
+                }
+                onChange={({ target }) => emailValueHandler(target.value)}
+                onPressEnter={checkSubscription}
+              />
+              <Button
+                type="primary"
+                danger={isEmailValid === false}
+                loading={isChecking}
+                disabled={isEmailValid === false}
+                onClick={checkSubscription}
+              >
+                {isEmailValid === false ? 'Invalid email' : 'Check'}
+              </Button>
+            </Space.Compact>
+          </div>
         </ol>
         <Text>When succeed, this modal will close and you can start using the plugin.</Text>
         <Text>
@@ -217,7 +254,12 @@ function App() {
           changeCurrentPageHandler(page);
           return;
         case 'EMAIL_STATUS':
-          buyRef.current.checkSubscription(data?.email);
+          const { emailStatus } = data;
+          buyRef.current.emailCheckHandler(emailStatus);
+          if (emailStatus) {
+            changeCurrentPageHandler('main');
+          }
+          return;
         case 'GET_INIT_CONNECTOR':
           mainRef.current.getConnector(data.connectorTemplate);
           mainRef.current.setStatus('waitForConnector');

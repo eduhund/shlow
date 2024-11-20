@@ -18,14 +18,13 @@ figma.ui.onmessage = async (message) => {
       createConnector(getQueue());
       break;
     case 'UI_READY':
-      console.log('fire');
       createInitConnector();
       break;
-    case 'checkEmail': {
+    case 'CHECK_EMAIL': {
       const { email } = message;
       const result = await checkSubscription(email);
 
-      figma.ui.postMessage({ type: 'EMAIL_STATUS', data: result });
+      figma.ui.postMessage({ type: 'EMAIL_STATUS', data: { emailStatus: result } });
     }
   }
 };
