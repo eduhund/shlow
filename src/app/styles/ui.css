@@ -56,7 +56,9 @@ h5 {
 #react-page {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  flex-grow: 1;
+  justify-content: space-between;
+  min-height: 100%;
 }
 
 #inputArea {
@@ -67,13 +69,14 @@ h5 {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  justify-content: space-between;
 }
 
 .main_footer {
   display: flex;
   gap: 24px;
-  position: fixed;
-  bottom: 16px;
+
+  background-color: #ffffff;
 }
 
 .footer_nav {
@@ -122,12 +125,8 @@ footer p {
   margin: 0;
 }
 
-footer span {
-  opacity: 0.6;
-}
-
 .block {
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 
 .subscription_form {
