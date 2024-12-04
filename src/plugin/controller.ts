@@ -74,7 +74,7 @@ const { showNotify, closeNotify } = (() => {
 
 async function checkSubscription(email?: string) {
   const userId = figma.currentUser?.id || '';
-  let uri = `https://mcrprdcts.eduhund.com/api/shlow/check_subscription?user_id=${userId}`;
+  let uri = `https://mcrprdcts.eduhund.com/api/check_subscription?product_id=SLW&user_id=${userId}`;
 
   if (email) {
     uri += `&email=${email}`;
