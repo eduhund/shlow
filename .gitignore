@@ -8,3 +8,5 @@ yarn-error.log
 *.log.*
 
 dist/
+
+.DS_Store

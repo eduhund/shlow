@@ -73,7 +73,6 @@ export const { checkInitConnector, setInitConnector, createInitConnector, create
   }
 
   function createInitConnector() {
-    console.log('creation start');
     const allConnectors = figma.currentPage.findAllWithCriteria({
       types: ['CONNECTOR'],
     });
@@ -83,9 +82,7 @@ export const { checkInitConnector, setInitConnector, createInitConnector, create
     initConnector = defaultConnector || allConnectors[0] || null;
 
     if (!initConnector) {
-      console.log('step 1');
       figma.once('selectionchange', () => {
-        console.log('selection change');
         const nodes = figma.currentPage.selection;
 
         if (nodes.length === 1 && nodes[0].type === 'CONNECTOR') {

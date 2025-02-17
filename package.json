@@ -1,9 +1,13 @@
 {
   "name": "shlow",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Creating documentation in Figma file without prototyping",
   "license": "MIT",
-  "author": "Roman Nebel",
+  "author": {
+    "name": "Roman Nebel",
+    "email": "nebel@eduhund.com",
+    "url": "https://eduhund.com"
+  },
   "scripts": {
     "build": "webpack --mode=production",
     "build:watch": "webpack --mode=development --watch",
