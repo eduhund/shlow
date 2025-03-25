@@ -112,15 +112,21 @@ export const { checkInitConnector, setInitConnector, createInitConnector, create
     return true;
   }
 
-  function createConnector(nodes: readonly SceneNode[]) {
+  async function createConnector(nodes: readonly SceneNode[]) {
     if (checkInitConnector() || createInitConnector()) {
       const newConnector = initConnector.clone();
+
+      const connectorFont = newConnector.text.fontName as FontName
+
+      await figma.loadFontAsync(connectorFont)
+
       newConnector.connectorStart = createConnectorEdge(nodes, 'start');
       newConnector.connectorEnd = createConnectorEdge(nodes, 'end');
       newConnector.connectorLineType = 'ELBOWED';
       newConnector.visible = true;
       newConnector.locked = false;
       newConnector.name = 'Flow Connector';
+      newConnector.text.characters = ""
       newConnector.strokeWeight = 4;
       newConnector.strokes = [
         {

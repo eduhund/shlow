@@ -14,7 +14,7 @@ figma.ui.onmessage = async (message) => {
       figma.viewport.zoom = figma.viewport.zoom;
       break;
     case 'CREATE_CONNECTOR':
-      createConnector(getQueue());
+      await createConnector(getQueue());
       break;
     case 'UI_READY':
       createInitConnector();
