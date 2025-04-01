@@ -95,12 +95,14 @@ export const { checkInitConnector, setInitConnector, createInitConnector, create
           arrow.locked = true;
           arrow.name = '_flow-init-connector';
           setInitConnector(arrow);
+          figma.ui.show();
           figma.ui.postMessage({
             type: 'SET_READY',
           });
         }
       });
 
+      figma.ui.show();
       figma.ui.postMessage({
         type: 'GET_INIT_CONNECTOR',
         data: { connectorTemplate },
@@ -117,10 +119,10 @@ export const { checkInitConnector, setInitConnector, createInitConnector, create
       const newConnector = initConnector.clone();
 
       if (newConnector.text.characters) {
-        const connectorFont = newConnector.text.fontName as FontName
-        await figma.loadFontAsync(connectorFont)
+        const connectorFont = newConnector.text.fontName as FontName;
+        await figma.loadFontAsync(connectorFont);
 
-        newConnector.text.characters = ""
+        newConnector.text.characters = '';
       }
 
       newConnector.connectorStart = createConnectorEdge(nodes, 'start');

@@ -1,10 +1,19 @@
 import { createInitConnector, createConnector, checkInitConnector } from './connector';
 import { getQueue, updateQueue } from './selectionQueue';
 
-figma.showUI(__html__, {
-  width: 340,
-  height: 320,
-});
+function run() {
+  try {
+    figma.showUI(__html__, {
+      width: 340,
+      height: 320,
+    });
+    const initNotification = figma.notify('Initialize the plugin...');
+    createInitConnector();
+    initNotification.cancel();
+  } catch {
+    figma.notify('Plugin was failed. Plese, mail us: we@eduhund.com', { error: true, timeout: 5000 });
+  }
+}
 
 figma.ui.onmessage = async (message) => {
   const { type } = message;
@@ -46,3 +55,5 @@ figma.on('selectionchange', () => {
     type: 'SET_READY',
   });
 });
+
+run();
