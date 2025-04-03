@@ -49,7 +49,11 @@ figma.ui.onmessage = async (message) => {
       figma.viewport.zoom = figma.viewport.zoom;
       break;
     case 'CREATE_CONNECTOR':
-      await createConnector(getQueue());
+      const creationResult = await createConnector(getQueue());
+      if (!creationResult) {
+        figma.once('selectionchange', initConnectorHandler);
+        sendUIAction('GET_INIT_CONNECTOR', { connectorTemplate });
+      }
       break;
     case 'UI_READY':
       if (!checkInitConnector()) {

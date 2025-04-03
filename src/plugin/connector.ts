@@ -81,7 +81,7 @@ export const { checkInitConnector, setInitConnector, createInitConnector, create
   }
 
   async function createConnector(nodes: readonly SceneNode[]) {
-    if (checkInitConnector() || createInitConnector()) {
+    if (checkInitConnector()) {
       const newConnector = initConnector.clone();
 
       if (newConnector.text.characters) {
@@ -106,7 +106,9 @@ export const { checkInitConnector, setInitConnector, createInitConnector, create
         },
       ];
       figma.currentPage.selection = [newConnector];
+      return true;
     }
+    return false;
   }
 
   return {
