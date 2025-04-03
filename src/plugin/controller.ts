@@ -20,15 +20,22 @@ function initConnectorHandler() {
   }
 }
 
-function run() {
+async function run() {
   try {
     figma.showUI(__html__, {
       width: 340,
       height: 320,
+      visible: false,
     });
     const initNotification = figma.notify('Initialize the plugin...');
-    createInitConnector();
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        createInitConnector();
+        resolve('');
+      });
+    });
     initNotification.cancel();
+    figma.ui.show();
   } catch {
     figma.notify('Plugin was failed. Plese, mail us: we@eduhund.com', { error: true, timeout: 5000 });
   }
