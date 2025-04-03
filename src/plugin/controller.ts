@@ -1,5 +1,24 @@
-import { createInitConnector, createConnector, checkInitConnector } from './connector';
+import { createInitConnector, createConnector, checkInitConnector, setInitConnector } from './connector';
 import { getQueue, updateQueue } from './selectionQueue';
+import { sendUIAction } from './UIController';
+import connectorTemplate from './arrowString';
+
+function initConnectorHandler() {
+  const nodes = figma.currentPage.selection;
+
+  if (nodes.length === 1 && nodes[0].type === 'CONNECTOR') {
+    const arrow = nodes[0];
+    figma.currentPage.selection = [];
+    figma.currentPage.insertChild(0, arrow);
+    arrow.x = -131100;
+    arrow.y = -131100;
+    arrow.visible = false;
+    arrow.locked = true;
+    arrow.name = '_flow-init-connector';
+    setInitConnector(arrow);
+    sendUIAction('SET_STANDBY');
+  }
+}
 
 function run() {
   try {
@@ -26,7 +45,10 @@ figma.ui.onmessage = async (message) => {
       await createConnector(getQueue());
       break;
     case 'UI_READY':
-      createInitConnector();
+      if (!checkInitConnector()) {
+        figma.once('selectionchange', initConnectorHandler);
+        sendUIAction('GET_INIT_CONNECTOR', { connectorTemplate });
+      }
       break;
   }
 };

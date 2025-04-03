@@ -6,7 +6,7 @@ import { ConnectorSettings, CreateInitConnector, NodesSettings, StandBy } from '
 import '../styles/ui.css';
 
 function App() {
-  const [status, setStatus] = useState('ready');
+  const [status, setStatus] = useState('standBy');
 
   function getInput() {
     return document.getElementById('inputArea') as HTMLInputElement;
@@ -45,7 +45,7 @@ function App() {
           setStatus('connectorSettings');
           return;
         default:
-          setStatus('ready');
+          setStatus('standBy');
       }
     };
 
@@ -56,7 +56,7 @@ function App() {
     <>
       <div id={status}>
         {status === 'waitForConnector' && <CreateInitConnector />}
-        {status === 'ready' && <StandBy />}
+        {status === 'standBy' && <StandBy />}
         {status === 'connectorSettings' && <ConnectorSettings />}
         {status === 'nodesSettings' && <NodesSettings />}
       </div>

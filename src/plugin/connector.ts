@@ -1,5 +1,3 @@
-import connectorTemplate from './arrowString';
-
 function checkIfNested(id = '') {
   return id.includes(';');
 }
@@ -80,38 +78,6 @@ export const { checkInitConnector, setInitConnector, createInitConnector, create
     const defaultConnector = allConnectors.find((connector) => connector.name === '_flow-init-connector');
 
     initConnector = defaultConnector || allConnectors[0] || null;
-
-    if (!initConnector) {
-      figma.once('selectionchange', () => {
-        const nodes = figma.currentPage.selection;
-
-        if (nodes.length === 1 && nodes[0].type === 'CONNECTOR') {
-          const arrow = nodes[0];
-          figma.currentPage.selection = [];
-          figma.currentPage.insertChild(0, arrow);
-          arrow.x = -131100;
-          arrow.y = -131100;
-          arrow.visible = false;
-          arrow.locked = true;
-          arrow.name = '_flow-init-connector';
-          setInitConnector(arrow);
-          figma.ui.show();
-          figma.ui.postMessage({
-            type: 'SET_READY',
-          });
-        }
-      });
-
-      figma.ui.show();
-      figma.ui.postMessage({
-        type: 'GET_INIT_CONNECTOR',
-        data: { connectorTemplate },
-      });
-
-      return false;
-    }
-
-    return true;
   }
 
   async function createConnector(nodes: readonly SceneNode[]) {
