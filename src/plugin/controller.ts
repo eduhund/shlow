@@ -51,20 +51,35 @@ async function run() {
 
 figma.ui.onmessage = async (message) => {
   const { type } = message;
+  let hasConnector;
   switch (type) {
     case 'FOCUS_ON_CANVAS':
       figma.currentPage.selection = [];
       figma.viewport.zoom = figma.viewport.zoom;
       break;
     case 'CREATE_CONNECTOR':
-      const creationResult = await createConnector(getQueue());
-      if (!creationResult) {
-        figma.once('selectionchange', initConnectorHandler);
-        sendUIAction('GET_INIT_CONNECTOR', { connectorTemplate });
+      hasConnector = await checkInitConnector();
+
+      if (!hasConnector) {
+        const initNotification = figma.notify(
+          'It looks like the recently used connector was deleted. Trying to find another one...'
+        );
+        await new Promise((resolve, reject) => {
+          setTimeout(() => {
+            try {
+              reuseAnyConnector();
+              resolve('');
+            } catch (e) {
+              reject(e);
+            }
+          });
+        });
+        initNotification.cancel();
       }
+      await createConnector(getQueue());
       break;
     case 'UI_READY':
-      const hasConnector = await checkInitConnector();
+      hasConnector = await checkInitConnector();
       if (!hasConnector) {
         figma.once('selectionchange', initConnectorHandler);
         sendUIAction('GET_INIT_CONNECTOR', { connectorTemplate });

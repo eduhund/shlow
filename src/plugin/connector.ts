@@ -61,7 +61,11 @@ function createConnectorEdge(nodes, position): ConnectorEndpoint {
 export const { getInitConnector, setInitConnector, checkInitConnector, reuseAnyConnector, createConnector } = (() => {
   async function getInitConnector(): Promise<ConnectorNode | null> {
     const connectorId = figma.root.getPluginData('initConnectorId');
-    return (await figma.getNodeByIdAsync(connectorId)) as ConnectorNode;
+    const connector = await figma.getNodeByIdAsync(connectorId);
+
+    if (connector && connector.type === 'CONNECTOR' && !connector.removed) return connector;
+
+    return null;
   }
 
   function setInitConnector(node: ConnectorNode) {
