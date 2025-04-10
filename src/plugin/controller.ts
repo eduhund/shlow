@@ -1,4 +1,4 @@
-import { createInitConnector, createConnector, checkInitConnector, setInitConnector } from './connector';
+import { createConnector, setInitConnector, checkInitConnector, reuseAnyConnector } from './connector';
 import { getQueue, updateQueue } from './selectionQueue';
 import { sendUIAction } from './UIController';
 import connectorTemplate from './arrowString';
@@ -27,17 +27,25 @@ async function run() {
       height: 320,
       visible: false,
     });
-    const initNotification = figma.notify('Initialize the plugin...');
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        createInitConnector();
-        resolve('');
+    const hasConnector = await checkInitConnector();
+    if (!hasConnector) {
+      const initNotification = figma.notify('Initialize the plugin...');
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          try {
+            reuseAnyConnector();
+            resolve('');
+          } catch (e) {
+            reject(e);
+          }
+        });
       });
-    });
-    initNotification.cancel();
+      initNotification.cancel();
+    }
     figma.ui.show();
-  } catch {
-    figma.notify('Plugin was failed. Plese, mail us: we@eduhund.com', { error: true, timeout: 5000 });
+  } catch (err) {
+    console.error('Plugin crashed:', err);
+    figma.notify('Plugin failed. Please email us: we@eduhund.com', { error: true, timeout: 5000 });
   }
 }
 
@@ -56,7 +64,8 @@ figma.ui.onmessage = async (message) => {
       }
       break;
     case 'UI_READY':
-      if (!checkInitConnector()) {
+      const hasConnector = await checkInitConnector();
+      if (!hasConnector) {
         figma.once('selectionchange', initConnectorHandler);
         sendUIAction('GET_INIT_CONNECTOR', { connectorTemplate });
       }

@@ -58,63 +58,73 @@ function createConnectorEdge(nodes, position): ConnectorEndpoint {
   }
 }
 
-export const { checkInitConnector, setInitConnector, createInitConnector, createConnector } = (() => {
-  let initConnector: ConnectorNode | null = null;
-
-  function checkInitConnector() {
-    if (initConnector?.removed) initConnector = null;
-    return Boolean(initConnector);
+export const { getInitConnector, setInitConnector, checkInitConnector, reuseAnyConnector, createConnector } = (() => {
+  async function getInitConnector(): Promise<ConnectorNode | null> {
+    const connectorId = figma.root.getPluginData('initConnectorId');
+    return (await figma.getNodeByIdAsync(connectorId)) as ConnectorNode;
   }
 
   function setInitConnector(node: ConnectorNode) {
-    initConnector = node;
+    figma.root.setPluginData('initConnectorId', node.id);
   }
 
-  function createInitConnector() {
+  async function checkInitConnector() {
+    const initConnector = await getInitConnector();
+    return initConnector && !initConnector?.removed;
+  }
+
+  function reuseAnyConnector() {
     const allConnectors = figma.currentPage.findAllWithCriteria({
       types: ['CONNECTOR'],
     });
-
     const defaultConnector = allConnectors.find((connector) => connector.name === '_flow-init-connector');
+    const initConnector = defaultConnector || allConnectors[0] || null;
 
-    initConnector = defaultConnector || allConnectors[0] || null;
+    if (initConnector) {
+      setInitConnector(initConnector);
+    }
+    return;
   }
 
   async function createConnector(nodes: readonly SceneNode[]) {
-    if (checkInitConnector()) {
-      const newConnector = initConnector.clone();
+    const initConnector = await getInitConnector();
 
-      if (newConnector.text.characters) {
-        const connectorFont = newConnector.text.fontName as FontName;
-        await figma.loadFontAsync(connectorFont);
-
-        newConnector.text.characters = '';
-      }
-
-      newConnector.connectorStart = createConnectorEdge(nodes, 'start');
-      newConnector.connectorEnd = createConnectorEdge(nodes, 'end');
-      newConnector.connectorLineType = 'ELBOWED';
-      newConnector.visible = true;
-      newConnector.locked = false;
-      newConnector.name = 'Flow Connector';
-      newConnector.strokeWeight = 4;
-      newConnector.strokes = [
-        {
-          type: 'SOLID',
-          color: { r: 0.6, g: 0.6, b: 0.6 },
-          opacity: 0.8,
-        },
-      ];
-      figma.currentPage.selection = [newConnector];
-      return true;
+    if (!initConnector) {
+      return false;
     }
-    return false;
+
+    const newConnector = initConnector.clone();
+
+    if (newConnector.text.characters) {
+      const connectorFont = newConnector.text.fontName as FontName;
+      await figma.loadFontAsync(connectorFont);
+
+      newConnector.text.characters = '';
+    }
+
+    newConnector.connectorStart = createConnectorEdge(nodes, 'start');
+    newConnector.connectorEnd = createConnectorEdge(nodes, 'end');
+    newConnector.connectorLineType = 'ELBOWED';
+    newConnector.visible = true;
+    newConnector.locked = false;
+    newConnector.name = 'Flow Connector';
+    newConnector.strokeWeight = 4;
+    newConnector.strokes = [
+      {
+        type: 'SOLID',
+        color: { r: 0.6, g: 0.6, b: 0.6 },
+        opacity: 0.8,
+      },
+    ];
+    figma.currentPage.selection = [newConnector];
+    return true;
   }
 
   return {
-    checkInitConnector,
+    getInitConnector,
     setInitConnector,
-    createInitConnector,
+    checkInitConnector,
+    reuseAnyConnector,
     createConnector,
   };
 })();
